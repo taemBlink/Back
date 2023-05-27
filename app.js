@@ -1,13 +1,16 @@
 const express = require('express');
 const { Users } = require('./models');
 const MyPageRouter = require('./routes/mypage');
+const authRouter = require("./routes/auth.js");
+const cookieParser = require("cookie-parser");
+// const cors = require("cors");
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.get('/', (req, res) => {
-    res.send('Hello, World!');
-});
+app.use(cookieParser());
+
+app.use("/", [authRouter]);
 app.use('/mypage', MyPageRouter);
 
 const PORT = 3000;
