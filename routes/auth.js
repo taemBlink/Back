@@ -9,8 +9,6 @@ const { Users } = require("../models");
 const jwt = require("jsonwebtoken");
 
 const bcrypt = require("bcrypt");
-
-//const secretKey = require("../config/jwtConfig");
 const options = require("../config/jwtConfig");
 
 //회원가입
@@ -33,7 +31,6 @@ router.post("/signup", async (req, res) => {
     const pwCheck = /^(?=.*[a-z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/;
 
     if (!pwCheck.test(password) || !emailCheck.test(email)) {
-      console.log("test33");
       return res
         .status(412)
         .json({ errorMessage: "유효하지 않은 이메일 혹은 패스워드 입니다." });
@@ -57,7 +54,6 @@ router.post("/signup", async (req, res) => {
       company,
     });
 
-    console.log("werwerwer");
     return res.status(201).json({ message: "회원가입 성공" });
   } catch (error) {
     return res
@@ -83,8 +79,6 @@ router.post("/login", async (req, res) => {
       },
       "cloneprojJwt_"
     );
-
-    console.log(token);
 
     res.cookie("authorization", `token ${token}`, {
       options,
