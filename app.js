@@ -28,13 +28,13 @@ app.use(passport.session()); // Passport 세션을 사용합니다.
 
 passport.serializeUser((user, done) => {
   console.log('serializeUser', user);
-  done(null, user.dataValues.user_id);
+  done(null, user.sns_id);
 });
 
-passport.deserializeUser(async (userId, done) => {
-  console.log('deserializeUser', userId);
+passport.deserializeUser(async (sns_id, done) => {
+  console.log('deserializeUser', sns_id);
   try {
-    const user = await Users.findOne({ where: { user_id: userId } });
+    const user = await Users.findOne({ where: { sns_id: sns_id } });
     console.log('Found user', user);
     done(null, user);
   } catch (error) {
