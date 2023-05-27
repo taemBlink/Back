@@ -22,7 +22,7 @@ module.exports = async (req, res, next) => {
     }
 
     const decodedToken = jwt.verify(token, "cloneprojJwt_");
-    console.log('decodedToken : ', decodedToken);
+    console.log("decodedToken : ", decodedToken);
     const userId = decodedToken.userId;
 
     const user = await Users.findOne({ where: { user_id: userId } });
@@ -37,7 +37,7 @@ module.exports = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log('error : ', error);
+    console.log("error : ", error);
     return res.status(403).json({
       errorMessage: "요청이 올바르지 않습니다.",
     });
