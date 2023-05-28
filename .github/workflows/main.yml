@@ -7,7 +7,7 @@ on:
 
 # 환경설정
 env:
-  DOCKER_IMAGE: ghcr.io/${{ github.actor }}/teamblink
+  DOCKER_IMAGE: ghcr.io/${{ github.actor }}/teamblink/back
   VERSION: ${{ github.sha }}
   NAME: go_cicd
 
