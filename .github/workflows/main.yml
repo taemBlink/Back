@@ -20,8 +20,8 @@ jobs:
       - uses: actions/checkout@v2
       
       # Convert github actor to lowercase and set DOCKER_IMAGE
-      - name: Convert actor to lowercase
-        run: echo "DOCKER_IMAGE=ghcr.io/${{ github.actor }}:latest" >> $GITHUB_ENV
+      - name: Convert actor to lowercase and set DOCKER_IMAGE
+        run: echo "DOCKER_IMAGE=ghcr.io/$(echo ${{ github.actor }} | tr '[:upper:]' '[:lower:]')/teamblink/back:latest" >> $GITHUB_ENV
         shell: bash
 
       # docker build 수행
@@ -50,7 +50,7 @@ jobs:
         with:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ env.DOCKER_IMAGE }}:latest
+          tags: ${{ env.DOCKER_IMAGE }}
   # 배포 Job
   deploy:
     needs: build  # build 후에 실행되도록 정의
@@ -66,5 +66,8 @@ jobs:
       # 3000 -> 80 포트로 수행하도록 지정
       - name: Docker run
         run: |
-          docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ${{ env.DOCKER_IMAGE }}:latest
-          docker run -d -p 80:3000 --name go_cicd --restart always ${{ env.DOCKER_IMAGE }}:latest
+          docker stop ${{ env.NAME }} || true
+          docker rm ${{ env.NAME }} || true
+          docker rmi ${{ env.DOCKER_IMAGE }} || true
+          docker run -d -p 80:3000 --name ${{ env.NAME }} --restart always ${{ env.DOCKER_IMAGE }}
+
