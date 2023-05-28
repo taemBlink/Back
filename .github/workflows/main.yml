@@ -7,10 +7,9 @@ on:
 
 # 환경설정
 env:
-  DOCKER_IMAGE: ghcr.io/${{ github.repository_owner }}/teamblink/back
+  DOCKER_IMAGE: ghcr.io/${{ github.actor.toLowerCase() }}/teamblink/back
   VERSION: ${{ github.sha }}
   NAME: go_cicd
-  REPO_URL: https://github.com/taemBlink/Back
 
 jobs:
   # 빌드 Job
