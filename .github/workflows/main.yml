@@ -5,9 +5,8 @@ on:
   push:
     branches: [ main ]
 
-# 환경설정
 env:
-  DOCKER_IMAGE: ghcr.io/${{ github.actor.toLowerCase() }}/teamblink/back
+  DOCKER_IMAGE: ""
   VERSION: ${{ github.sha }}
   NAME: go_cicd
 
@@ -19,10 +18,17 @@ jobs:
     steps:
       # github repository에서 checkout
       - uses: actions/checkout@v2
+      
+      # Convert github actor to lowercase and set DOCKER_IMAGE
+      - name: Convert actor to lowercase
+        run: echo "DOCKER_IMAGE=ghcr.io/${{ github.actor }}:latest" >> $GITHUB_ENV
+        shell: bash
+
       # docker build 수행
       - name: Set up docker buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
+
       - name: Cache docker layers
         uses: actions/cache@v2
         with:
@@ -37,6 +43,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
