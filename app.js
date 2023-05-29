@@ -8,7 +8,7 @@ const kakao = require("./passport/kakaoStrategy");
 const jobRouter = require("./routes/jobs");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-// const cors = require("cors");
+const cors = require('cors');
 const app = express();
 require("dotenv").config();
 
@@ -26,6 +26,10 @@ app.use(
 
 app.use(passport.initialize()); // Passport를 초기화합니다.
 app.use(passport.session()); // Passport 세션을 사용합니다.
+
+// CORS 설정
+const cors = require('cors');
+app.use(cors());
 
 passport.serializeUser((user, done) => {
   console.log("serializeUser", user);
@@ -49,25 +53,6 @@ kakao(); // kakaoStrategy.js의 module.exports를 실행합니다.
 app.use("/", [authRouter, jobRouter]);
 app.use("/mypage", MyPageRouter);
 app.use("/kakao", kakaoRouter);
-
-// Greenlock의 설정
-// const lex = greenlock.create({
-//   version: 'draft-12',
-//   configDir: '/etc/letsencrypt', // 또는 '~/.config/acme/'
-//   server: 'https://acme-v02.api.letsencrypt.org/directory',
-//   email: 'bchi2000@gmail.com', // Let's Encrypt에 등록할 이메일 주소
-//   agreeTos: true, // 이메일 주소의 소유자가 이용 약관에 동의함
-//   approveDomains: ['teamblink.shop'], // 인증서를 얻을 도메인
-// });
-
-// // Greenlock와 Express.js 앱 연결
-// require('http').createServer(lex.middleware(require('redirect-https')())).listen(80, function () {
-//   console.log("HTTP Server listening on port 80 for ACME challenges and redirects to HTTPS");
-// });
-
-// require('https').createServer(lex.httpsOptions, lex.middleware(app)).listen(443, function () {
-//   console.log("HTTPS Server listening on port 443");
-// });
 
 const PORT = 3000;
 app.listen(PORT, () => {
