@@ -27,8 +27,6 @@ app.use(
 app.use(passport.initialize()); // Passport를 초기화합니다.
 app.use(passport.session()); // Passport 세션을 사용합니다.
 
-// CORS 설정
-const cors = require('cors');
 app.use(cors());
 
 passport.serializeUser((user, done) => {
