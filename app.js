@@ -9,7 +9,7 @@ const cookieParser = require("cookie-parser");
 const session = require('express-session');
 // const cors = require("cors");
 const app = express();
-const greenlock = require('greenlock-express');
+// const greenlock = require('greenlock-express');
 require('dotenv').config();
 
 app.use(express.json());
@@ -52,23 +52,23 @@ app.use('/mypage', MyPageRouter);
 app.use('/kakao', kakaoRouter);
 
 // Greenlock의 설정
-const lex = greenlock.create({
-  version: 'draft-12', 
-  configDir: '/etc/letsencrypt', // 또는 '~/.config/acme/'
-  server: 'https://acme-v02.api.letsencrypt.org/directory',
-  email: 'bchi2000@gmail.com', // Let's Encrypt에 등록할 이메일 주소
-  agreeTos: true, // 이메일 주소의 소유자가 이용 약관에 동의함
-  approveDomains: ['teamblink.shop'], // 인증서를 얻을 도메인
-});
+// const lex = greenlock.create({
+//   version: 'draft-12', 
+//   configDir: '/etc/letsencrypt', // 또는 '~/.config/acme/'
+//   server: 'https://acme-v02.api.letsencrypt.org/directory',
+//   email: 'bchi2000@gmail.com', // Let's Encrypt에 등록할 이메일 주소
+//   agreeTos: true, // 이메일 주소의 소유자가 이용 약관에 동의함
+//   approveDomains: ['teamblink.shop'], // 인증서를 얻을 도메인
+// });
 
-// Greenlock와 Express.js 앱 연결
-require('http').createServer(lex.middleware(require('redirect-https')())).listen(80, function () {
-  console.log("HTTP Server listening on port 80 for ACME challenges and redirects to HTTPS");
-});
+// // Greenlock와 Express.js 앱 연결
+// require('http').createServer(lex.middleware(require('redirect-https')())).listen(80, function () {
+//   console.log("HTTP Server listening on port 80 for ACME challenges and redirects to HTTPS");
+// });
 
-require('https').createServer(lex.httpsOptions, lex.middleware(app)).listen(443, function () {
-  console.log("HTTPS Server listening on port 443");
-});
+// require('https').createServer(lex.httpsOptions, lex.middleware(app)).listen(443, function () {
+//   console.log("HTTPS Server listening on port 443");
+// });
 
 const PORT = 3000;
 app.listen(PORT, () => {
