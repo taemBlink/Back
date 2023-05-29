@@ -48,9 +48,6 @@ module.exports = (sequelize, DataTypes) => {
       end_date: {
         type: DataTypes.STRING,
       },
-      image_file: {
-        type: DataTypes.STRING,
-      },
       address: {
         allowNull: false,
         type: DataTypes.STRING,

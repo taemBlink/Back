@@ -28,9 +28,6 @@ module.exports = {
       end_date: {
         type: Sequelize.STRING,
       },
-      image_file: {
-        type: Sequelize.STRING,
-      },
       address: {
         type: Sequelize.STRING,
       },

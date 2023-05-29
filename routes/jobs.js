@@ -5,10 +5,7 @@ const router = express.Router();
 const authjwt = require("../middlewares/auth-middlewares");
 const { Users, Jobs, sequelize } = require("../models");
 
-// 0. 이미지 파일 업로드 API
-//    @ image_file 작성
-router.post;
-// // image_file 서버에 저장해주는 multer 설정
+// image_file 서버에 저장해주는 multer 설정
 const fileStorage = multer.diskStorage({
   // 저장 방식
   destination: (req, file, cb) => {
@@ -17,13 +14,11 @@ const fileStorage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // 저장되는 이름 지정
-    cb(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
+    cb(null, file.originalname);
   },
 });
 
+// image_file 확장자 필터링
 const fileFilter = (req, file, cb) => {
   // 확장자 필터링
   const allowedFileTypes = [
@@ -43,16 +38,24 @@ const fileFilter = (req, file, cb) => {
       .json({ errorMessage: "유효하지 않은 이미지파일 형식입니다." });
   }
 };
-
+// image_file 저장
 const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
   "image"
 );
 
-// 정규 표현식을 이용한 유효성 검사
-const RE_TITLE = /^[a-zA-Z0-9\s\S]{1,40}$/; // 채용공고 글 제목 정규 표현식
-const RE_HTML_ERROR = /<[\s\S]*?>/; // 채용공고 글 HTML 에러 정규 표현식
-const RE_CONTENT = /^[\s\S]{1,3000}$/; // 채용공고 글 내용 정규 표현식
-const RE_ADDRESS = /^[\s\S]$/; // 채용공고 글 주소 정규 표현식
+// 0. 이미지 파일 업로드 API
+//    @ image_file 작성
+router.post("/job/upload", upload, async (req, res) => {
+  try {
+    const image_file = req.file;
+    return res.status(200).json({ message: `${image_file}를 업로드 성공` });
+  } catch (e) {
+    console.log(e);
+    return res
+      .status(400)
+      .json({ errorMessage: "이미지 업로드 실패, 요청이 올바르지 않습니다." });
+  }
+});
 
 // 1. 채용공고 글 작성 API
 //      @ 토큰을 검사하여, 유효한 토큰일 경우에만 채용공고 글 작성 가능
@@ -61,18 +64,41 @@ router.post("/job/write", authjwt, async (req, res) => {
   try {
     const user = res.locals.user;
     // req.body로 작성 내용 받아오기
-    const { title, content, image_file, address, keywords, end_date } =
-      req.body;
-    // image_file은 file 형식으로 받기
-    // const image_file = req.file;
-    // const imageFileName = image_file.filename;
+    const { title, content, address, keywords, end_date } = req.body;
+    // content로 넘어온 HTML 형식을 분석해서 넘겨주기
+
+    // 유효성 검사
+    if (title < 1) {
+      return res
+        .status(412)
+        .json({ errorMessage: "유효하지 않은 타이틀입니다." });
+    }
+    if (content < 1) {
+      return res
+        .status(412)
+        .json({ errorMessage: "유효하지 않은 content입니다." });
+    }
+    if (keywords < 1) {
+      return res
+        .status(412)
+        .json({ errorMessage: "유효하지 않은 키워드 정보입니다." });
+    }
+    if (end_date < 1) {
+      return res
+        .status(412)
+        .json({ errorMessage: "유효하지 않은 마감 일자 형식입니다." });
+    }
+    if (address < 1) {
+      return res
+        .status(412)
+        .json({ errorMessage: "유효하지 않은 주소 형식입니다." });
+    }
 
     // 채용공고 글 작성
     await Jobs.create({
       user_id: user.user_id,
       title,
       content,
-      image_file,
       end_date,
       address,
       keywords,
@@ -97,7 +123,6 @@ router.get("/job", async (req, res) => {
         "title",
         "keywords",
         [sequelize.col("company"), "company"],
-        "image_file",
         "end_date",
         "address",
       ],
@@ -141,7 +166,6 @@ router.get("/job/:job_id", async (req, res) => {
         "content",
         "end_date",
         "keywords",
-        "image_file",
         "address",
       ],
       where: { job_id },
@@ -218,6 +242,33 @@ router.put("/job/:job_id", authjwt, async (req, res) => {
       return res
         .status(403)
         .json({ errorMessage: "채용공고 글 수정 권한이 없습니다." });
+    }
+
+    // 유효성 검사
+    if (title < 1) {
+      return res
+        .status(412)
+        .json({ errorMessage: "유효하지 않은 타이틀입니다." });
+    }
+    if (content < 1) {
+      return res
+        .status(412)
+        .json({ errorMessage: "유효하지 않은 content입니다." });
+    }
+    if (keywords < 1) {
+      return res
+        .status(412)
+        .json({ errorMessage: "유효하지 않은 키워드 정보입니다." });
+    }
+    if (end_date < 1) {
+      return res
+        .status(412)
+        .json({ errorMessage: "유효하지 않은 마감 일자 형식입니다." });
+    }
+    if (address < 1) {
+      return res
+        .status(412)
+        .json({ errorMessage: "유효하지 않은 주소 형식입니다." });
     }
 
     // 수정할 내용에 따라 수정해주기
