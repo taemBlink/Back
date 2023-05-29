@@ -193,7 +193,7 @@ router.get("/job/:job_id", async (req, res) => {
     const keywords = job.keywords;
 
     const otherJobs = await Jobs.findAll({
-      attributes: ["job_id", "user_id", [sequelize.col("company"), "company"]],
+      attributes: ["job_id", "user_id", [sequelize.col("Users.company"), "company"]],
       where: { keywords },
       include: [
         {
