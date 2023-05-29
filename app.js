@@ -1,32 +1,50 @@
-const express = require('express');
-const { Users } = require('./models');
-const MyPageRouter = require('./routes/mypage');
+const express = require("express");
+const { Users } = require("./models");
+const MyPageRouter = require("./routes/mypage");
 const authRouter = require("./routes/auth.js");
-const kakaoRouter = require('./routes/kakao');
-const passport = require('passport');
-const kakao = require('./passport/kakaoStrategy');
+const kakaoRouter = require("./routes/kakao");
+const passport = require("passport");
+const kakao = require("./passport/kakaoStrategy");
+const jobRouter = require("./routes/jobs");
 const cookieParser = require("cookie-parser");
-const session = require('express-session');
+const session = require("express-session");
 // const cors = require("cors");
 const app = express();
+<<<<<<< HEAD
+require("dotenv").config();
+=======
 // const greenlock = require('greenlock-express');
 require('dotenv').config();
+>>>>>>> 53c819779529ec8229d43a97878cd2aaaa7e7131
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(
-    session({
-       secret: process.env.SESSION_SECRET, // 세션 암호화에 사용할 키입니다. 실제로는 .env 등에 저장하는 것이 좋습니다.
-       resave: false,
-       saveUninitialized: false,
-    }),
-  );
+  session({
+    secret: process.env.SESSION_SECRET, // 세션 암호화에 사용할 키입니다. 실제로는 .env 등에 저장하는 것이 좋습니다.
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 app.use(passport.initialize()); // Passport를 초기화합니다.
 app.use(passport.session()); // Passport 세션을 사용합니다.
 
+<<<<<<< HEAD
+passport.serializeUser((user, done) => {
+  console.log("serializeUser", user);
+  done(null, user.dataValues.user_id);
+});
+
+passport.deserializeUser(async (userId, done) => {
+  console.log("deserializeUser", userId);
+  try {
+    const user = await Users.findOne({ where: { user_id: userId } });
+    console.log("Found user", user);
+    done(null, user);
+=======
 
 passport.serializeUser((user, done) => {  // Strategy 성공 시 호출됨
   // console.log('serializeUser', user);
@@ -39,17 +57,18 @@ passport.deserializeUser(async (sns_id, done) => {  // 매개변수 id는 req.se
     const user = await Users.findOne({ where: { sns_id: sns_id } });  // id를 기준으로 사용자 정보를 조회합니다.
     // console.log('Found user', user);
     done(null, user); // 조회한 정보를 req.user에 저장합니다.
+>>>>>>> 53c819779529ec8229d43a97878cd2aaaa7e7131
   } catch (error) {
-    console.error('Error in deserializeUser' ,error);
+    console.error("Error in deserializeUser", error);
     done(error);
   }
-}); 
+});
 
 kakao();  // kakaoStrategy.js의 module.exports를 실행합니다.
 
-app.use("/", [authRouter]);
-app.use('/mypage', MyPageRouter);
-app.use('/kakao', kakaoRouter);
+app.use("/", [authRouter, jobRouter]);
+app.use("/mypage", MyPageRouter);
+app.use("/kakao", kakaoRouter);
 
 // Greenlock의 설정
 // const lex = greenlock.create({
@@ -73,5 +92,5 @@ app.use('/kakao', kakaoRouter);
 
 const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(PORT, '포트 번호로 서버가 실행되었습니다.');
+  console.log(PORT, "포트 번호로 서버가 실행되었습니다.");
 });

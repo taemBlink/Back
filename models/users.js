@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.hasMany(models.Jobs, {
-        sourceKey: 'user_id',
-        foreignKey: 'user_id',
+        sourceKey: "user_id",
+        foreignKey: "user_id",
       });
     }
   }
@@ -22,9 +22,6 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
-      },
-      sns_id: {
-        type: DataTypes.STRING,
       },
       email: {
         allowNull: false,
@@ -39,11 +36,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      user_type: {
-        allowNull: false,
+      company: {
         type: DataTypes.STRING,
       },
-      company: {
+      user_type: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
       provider: {
@@ -62,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'Users',
+      modelName: "Users",
     }
   );
   return Users;

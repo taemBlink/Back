@@ -84,12 +84,12 @@ router.post("/login", async (req, res) => {
     console.log(token);
 
     res.cookie("authorization", `token ${token}`, {
-    //   options,
+      //   options,
     });
 
     return res.status(201).json({ message: "로그인 성공" });
   } catch (error) {
-    console.log('error : ', error);
+    console.log("error : ", error);
     return res.json({ errorMessage: "요청이 올바르지 않습니다." } + error);
   }
 });
