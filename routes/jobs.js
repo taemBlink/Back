@@ -122,7 +122,12 @@ router.get("/job", async (req, res) => {
         "user_id",
         "title",
         "keywords",
-        [sequelize.col("company"), "company"],
+        [
+          sequelize.literal(
+            "(SELECT `company` FROM `Users` WHERE `Users`.`id` = `Jobs`.`user_id`)"
+          ),
+          "company",
+        ],
         "end_date",
         "address",
       ],
@@ -161,7 +166,12 @@ router.get("/job/:job_id", async (req, res) => {
       attributes: [
         "job_id",
         "user_id",
-        [sequelize.col("company"), "company"],
+        [
+          sequelize.literal(
+            "(SELECT `company` FROM `Users` WHERE `Users`.`id` = `Jobs`.`user_id`)"
+          ),
+          "company",
+        ],
         "title",
         "content",
         "end_date",
