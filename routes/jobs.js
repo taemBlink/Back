@@ -122,7 +122,7 @@ router.get("/job", async (req, res) => {
         "user_id",
         "title",
         "keywords",
-        [sequelize.col("company"), "company"],
+        [sequelize.col("Users.company"), "company"],
         "end_date",
         "address",
       ],
@@ -161,7 +161,7 @@ router.get("/job/:job_id", async (req, res) => {
       attributes: [
         "job_id",
         "user_id",
-        [sequelize.col("company"), "company"],
+        [sequelize.col("Users.company"), "company"],
         "title",
         "content",
         "end_date",
@@ -183,7 +183,7 @@ router.get("/job/:job_id", async (req, res) => {
     const keywords = job.keywords;
 
     const otherJobs = await Jobs.findAll({
-      attributes: ["job_id", "user_id", [sequelize.col("company"), "company"]],
+      attributes: ["job_id", "user_id", [sequelize.col("Users.company"), "company"]],
       where: { keywords },
       include: [
         {
