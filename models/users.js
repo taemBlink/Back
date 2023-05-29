@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 "use strict";
 const { Model } = require("sequelize");
+=======
+'use strict';
+const { Model } = require('sequelize');
+>>>>>>> 53c819779529ec8229d43a97878cd2aaaa7e7131
 module.exports = (sequelize, DataTypes) => {
   class Users extends Model {
     /**
@@ -10,8 +15,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.hasMany(models.Jobs, {
+<<<<<<< HEAD
         sourceKey: "user_id",
         foreignKey: "user_id",
+=======
+        sourceKey: 'user_id',
+        foreignKey: 'user_id',
+>>>>>>> 53c819779529ec8229d43a97878cd2aaaa7e7131
       });
     }
   }
@@ -23,6 +33,12 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
+<<<<<<< HEAD
+=======
+      sns_id: {
+        type: DataTypes.STRING,
+      },
+>>>>>>> 53c819779529ec8229d43a97878cd2aaaa7e7131
       email: {
         allowNull: false,
         type: DataTypes.STRING,
@@ -36,13 +52,22 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING,
       },
+<<<<<<< HEAD
       company: {
         type: DataTypes.STRING,
       },
+=======
+>>>>>>> 53c819779529ec8229d43a97878cd2aaaa7e7131
       user_type: {
         allowNull: false,
         type: DataTypes.STRING,
       },
+<<<<<<< HEAD
+=======
+      company: {
+        type: DataTypes.STRING,
+      },
+>>>>>>> 53c819779529ec8229d43a97878cd2aaaa7e7131
       provider: {
         type: DataTypes.STRING,
       },
@@ -59,7 +84,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
+<<<<<<< HEAD
       modelName: "Users",
+=======
+      modelName: 'Users',
+>>>>>>> 53c819779529ec8229d43a97878cd2aaaa7e7131
     }
   );
   return Users;
