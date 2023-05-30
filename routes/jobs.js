@@ -62,7 +62,7 @@ router.post("/job/upload", upload, async (req, res) => {
 //      @ title, content, image_file, keywords, address 작성
 router.post("/job/write", authjwt, async (req, res) => {
   try {
-    const user = res.locals.user;
+    const { user_id } = res.locals.user;
     // req.body로 작성 내용 받아오기
     const { title, content, address, keywords, end_date } = req.body;
     // content로 넘어온 HTML 형식을 분석해서 넘겨주기
@@ -96,7 +96,7 @@ router.post("/job/write", authjwt, async (req, res) => {
 
     // 채용공고 글 작성
     await Jobs.create({
-      user_id: user.user_id,
+      user_id,
       title,
       content,
       end_date,
@@ -124,7 +124,7 @@ router.get("/job", async (req, res) => {
         "keywords",
         [
           sequelize.literal(
-            "(SELECT `company` FROM `Users` WHERE `Users`.`id` = `Jobs`.`user_id`)"
+            `(SELECT company FROM Users WHERE Users.user_id = Jobs.user_id)`
           ),
           "company",
         ],
@@ -168,7 +168,7 @@ router.get("/job/:job_id", async (req, res) => {
         "user_id",
         [
           sequelize.literal(
-            "(SELECT `company` FROM `Users` WHERE `Users`.`id` = `Jobs`.`user_id`)"
+            `(SELECT company FROM Users WHERE Users.user_id = Jobs.user_id)`
           ),
           "company",
         ],
@@ -193,7 +193,16 @@ router.get("/job/:job_id", async (req, res) => {
     const keywords = job.keywords;
 
     const otherJobs = await Jobs.findAll({
-      attributes: ["job_id", "user_id", [sequelize.col("company"), "company"]],
+      attributes: [
+        "job_id",
+        "title",
+        [
+          sequelize.literal(
+            `(SELECT company FROM Users WHERE Users.user_id = Jobs.user_id)`
+          ),
+          "company",
+        ],
+      ],
       where: { keywords },
       include: [
         {
@@ -233,7 +242,7 @@ router.get("/job/:job_id", async (req, res) => {
 router.put("/job/:job_id", authjwt, async (req, res) => {
   try {
     // user
-    const { user } = res.locals.user;
+    const { user_id } = res.locals.user;
     // params로 job_id
     const { job_id } = req.params;
     // 채용공고 글 조회
@@ -248,7 +257,7 @@ router.put("/job/:job_id", authjwt, async (req, res) => {
         .json({ errorMessage: "존재하지 않는 채용공고 글입니다." });
     }
     // 권한이 없을 경우
-    if (user.user_id !== job.user_id) {
+    if (user_id !== job.user_id) {
       return res
         .status(403)
         .json({ errorMessage: "채용공고 글 수정 권한이 없습니다." });
@@ -324,10 +333,10 @@ router.put("/job/:job_id", authjwt, async (req, res) => {
 
 // 5. 채용공고 글 삭제 API
 //    @ 토큰을 검사형, 해당 사용자가 작성한 채용공고 글만 삭제 가능
-router.delete("/job/:job_id", async (req, res) => {
+router.delete("/job/:job_id", authjwt, async (req, res) => {
   try {
     // user
-    const user = res.locals.user;
+    const { user_id } = res.locals.user;
     // job_id
     const { job_id } = req.params;
     // job 조회
@@ -340,7 +349,7 @@ router.delete("/job/:job_id", async (req, res) => {
         .json({ errorMessage: "존재하지 않는 채용공고 글입니다." });
     }
     // 채용공고 글 권한 확인
-    if (user.user_id !== job.user_id) {
+    if (user_id !== job.user_id) {
       return res
         .status(403)
         .json({ errorMessage: "채용공고 글 삭제 권한이 없습니다." });

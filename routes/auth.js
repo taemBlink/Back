@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const { authjwt } = require("../middlewares/auth-middlewares");
 const { Users } = require("../models");
 const jwt = require("jsonwebtoken");
 
@@ -76,16 +75,12 @@ router.post("/login", async (req, res) => {
 
     const token = jwt.sign(
       {
-        userId: user.user_id,
+        user_id: user.user_id,
       },
       "cloneprojJwt_"
     );
 
-    console.log(token);
-
-    res.cookie("authorization", `token ${token}`, {
-      //   options,
-    });
+    res.cookie("authorization", `token ${token}`);
 
     return res.status(201).json({ message: "로그인 성공" });
   } catch (error) {
