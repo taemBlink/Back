@@ -14,30 +14,21 @@ module.exports = async (req, res, next) => {
         .status(403)
         .json({ errorMessage: "로그인이 필요한 기능입니다." });
     }
-    console.log(tokenType);
     if (tokenType !== "token") {
+      res.clearCookie("authorization");
       return res
         .status(401)
         .json({ errorMessage: "전달된 쿠키에서 오류가 발생하였습니다." });
     }
 
-    const decodedToken = jwt.verify(token, "cloneprojJwt_");
-    console.log("decodedToken : ", decodedToken);
-    const userId = decodedToken.userId;
-
-    const user = await Users.findOne({ where: { user_id: userId } });
-    if (!user) {
-      res.clearCookie("authorization");
-      return res
-        .status(403)
-        .json({ errorMessage: "전달된 쿠키에서 오류가 발생하였습니다.!" });
-    }
+    const { user_id } = jwt.verify(token, "cloneprojJwt_");
+    const user = await Users.findByPk(user_id);
 
     res.locals.user = user;
-
     next();
   } catch (error) {
     console.log("error : ", error);
+    res.clearCookie("authorization");
     return res.status(403).json({
       errorMessage: "요청이 올바르지 않습니다.",
     });
