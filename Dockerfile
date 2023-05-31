@@ -6,7 +6,7 @@ WORKDIR /app
 
 # 종속성 설치
 COPY package*.json ./
-RUN npm install --production
+RUN npm install
 
 # 소스 코드 복사
 COPY . .
