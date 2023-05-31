@@ -308,7 +308,7 @@ router.put("/job/:job_id", authjwt, async (req, res) => {
     }
 
     // 수정할 부분이 모두 없을 경우/ 수정할 내용이 있다면 해당 부분만 수정
-    if (!(title && content && keywords && end_date && address)) {
+    if (!(title || content || keywords || end_date || address)) {
       return res.status(400).json({ errorMessage: "수정할 내용이 없습니다." });
     }
 
