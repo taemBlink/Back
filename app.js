@@ -1,5 +1,5 @@
 const express = require("express");
-const { Users } = require("./models");
+const { Users, sequelize } = require("./models");
 const MyPageRouter = require("./routes/mypage");
 const authRouter = require("./routes/auth.js");
 const kakaoRouter = require("./routes/kakao");
