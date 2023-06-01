@@ -6,7 +6,7 @@ const config = {
     "password": process.env.DEVELOPMENT_DB_PASSWORD,
     "database": process.env.DEVELOPMENT_DB_DATABASE,
     "host": process.env.DEVELOPMENT_DB_HOST,
-    "dialect": process.env.DEVELOPMENT_DB_DIALECT
+    "dialect": "mysql"
   },
   "test": {
     "username": process.env.TEST_DB_USERNAME,
