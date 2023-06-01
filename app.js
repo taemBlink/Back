@@ -11,6 +11,7 @@ const session = require("express-session");
 // const cors = require('cors');
 const app = express();
 require("dotenv").config();
+require('./config/config.js')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
