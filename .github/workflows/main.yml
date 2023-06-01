@@ -44,6 +44,12 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: ${{ env.DOCKER_IMAGE }}:latest
+        env:  # Dockerfile에서 사용할 환경변수
+          DEVELOPMENT_DB_USERNAME: ${{ secrets.DEVELOPMENT_DB_USERNAME }}
+          DEVELOPMENT_DB_PASSWORD: ${{ secrets.DEVELOPMENT_DB_PASSWORD }}
+          DEVELOPMENT_DB_DATABASE: ${{ secrets.DEVELOPMENT_DB_DATABASE }}
+          DEVELOPMENT_DB_HOST: ${{ secrets.DEVELOPMENT_DB_HOST }}
+          DEVELOPMENT_DB_DIALECT: ${{ secrets.DEVELOPMENT_DB_DIALECT }}
   # 배포 Job
   deploy:
     needs: build  # build 후에 실행되도록 정의
