@@ -31,6 +31,10 @@ module.exports = {
       address: {
         type: Sequelize.STRING,
       },
+      visibility: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
