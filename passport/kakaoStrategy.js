@@ -67,3 +67,5 @@ module.exports = () => {
     )
   );
 };
+
+module.exports.Strategy = KakaoStrategy;
