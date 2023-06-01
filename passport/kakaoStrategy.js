@@ -9,7 +9,8 @@ module.exports = () => {
     new KakaoStrategy(
       {
         // clientID: 'c4d10a107beb976aa9c0f0d20e817899', // 카카오 로그인에서 발급받은 REST API 키
-        clientID: process.env.KAKAO_ID, // 카카오 로그인에서 발급받은 REST API 키
+        // clientID: process.env.KAKAO_ID, // 카카오 로그인에서 발급받은 REST API 키
+        clientID: '20d8df12dfc8edd45d2ad1ad83ecc33c', // 카카오 로그인에서 발급받은 REST API 키
         callbackURL: '/kakao/callback', // 카카오 로그인 Redirect URI 경로
       },
       /*
