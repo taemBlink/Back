@@ -66,6 +66,7 @@ router.post("/job/write", authjwt, async (req, res) => {
     // req.body로 작성 내용 받아오기
     const { title, content, address, keywords, end_date } = req.body;
     // content로 넘어온 HTML 형식을 분석해서 넘겨주기
+    const visibility = true;
 
     // 유효성 검사
     if (title < 1) {
@@ -102,6 +103,7 @@ router.post("/job/write", authjwt, async (req, res) => {
       end_date,
       address,
       keywords,
+      visibility,
     });
     return res.status(200).json({ message: "채용공고 작성에 성공했습니다." });
   } catch (e) {
@@ -130,6 +132,7 @@ router.get("/job", async (req, res) => {
         ],
         "end_date",
         "address",
+        "visibility",
       ],
       include: [
         {
@@ -177,6 +180,7 @@ router.get("/job/:job_id", async (req, res) => {
         "end_date",
         "keywords",
         "address",
+        "visibility",
       ],
       where: { job_id },
       include: [
@@ -196,6 +200,7 @@ router.get("/job/:job_id", async (req, res) => {
       attributes: [
         "job_id",
         "title",
+        "visibility",
         [
           sequelize.literal(
             `(SELECT company FROM Users WHERE Users.user_id = Jobs.user_id)`
@@ -331,8 +336,65 @@ router.put("/job/:job_id", authjwt, async (req, res) => {
   }
 });
 
-// 5. 채용공고 글 삭제 API
-//    @ 토큰을 검사형, 해당 사용자가 작성한 채용공고 글만 삭제 가능
+// 5. 채용공고 글 내리기/올리기 API
+//    @ 토큰을 검사, 해당 사용자가 작성한 채용공고 글만 올리고 내리기 가능
+router.patch("/job/:job_id", authjwt, async (req, res) => {
+  try {
+    // user
+    const { user_id } = res.locals.user;
+    // job_id
+    const { job_id } = req.params;
+    // 채용공고 글 조회
+    const job = await Jobs.findOne({ where: { job_id } });
+    // 입력 받은 visibility
+    const { visibility } = req.body;
+    console.log(visibility);
+
+    // 채용공고 글이 없을 경우
+    if (!job) {
+      return res
+        .status(400)
+        .json({ errorMessage: "존재하지 않는 채용공고 글입니다." });
+    }
+    // 권한이 없을 경우
+    if (user_id !== job.user_id) {
+      return res
+        .status(403)
+        .json({ errorMessage: "채용공고 글 상태 전환 권한이 없습니다." });
+    }
+
+    // 유효성 검사
+    if (visibility === undefined) {
+      return res
+        .status(412)
+        .json({ errorMessage: "유효하지 않은 요청입니다." });
+    } else {
+      job.visibility = visibility;
+    }
+    const updateVisibilityCount = await job.save();
+
+    // 수정한 채용공고 글이 없을 경우
+    if (!updateVisibilityCount) {
+      return res
+        .status(401)
+        .json({ errorMessage: "채용공고 글 상태를 수정하지 못했습니다." });
+    }
+
+    // 수정 완료
+    return res
+      .status(200)
+      .json({ message: "채용공고 글 상태를 전환했습니다." });
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({
+      errorMessage:
+        "채용공고 글 상태를 처리하지 못했어요. 요청이 올바르지 않습니다.",
+    });
+  }
+});
+
+// 6. 채용공고 글 삭제 API
+//    @ 토큰을 검사, 해당 사용자가 작성한 채용공고 글만 삭제 가능
 router.delete("/job/:job_id", authjwt, async (req, res) => {
   try {
     // user

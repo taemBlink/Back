@@ -8,7 +8,7 @@ const kakao = require("./passport/kakaoStrategy");
 const jobRouter = require("./routes/jobs");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-const cors = require('cors');
+// const cors = require('cors');
 const app = express();
 require("dotenv").config();
 
@@ -27,7 +27,7 @@ app.use(
 app.use(passport.initialize()); // Passport를 초기화합니다.
 app.use(passport.session()); // Passport 세션을 사용합니다.
 
-app.use(cors());
+// app.use(cors());
 
 passport.serializeUser((user, done) => {
   console.log("serializeUser", user);
