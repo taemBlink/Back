@@ -48,8 +48,6 @@ passport.deserializeUser(async (userId, done) => {
 });
 
 kakao(); // kakaoStrategy.js의 module.exports를 실행합니다.
-passport.use(kakaoStrategy);  // Passport에 kakaoStrategy 등록
-kakaoStrategy();
 
 app.use("/", [authRouter, jobRouter]);
 app.use("/mypage", MyPageRouter);
