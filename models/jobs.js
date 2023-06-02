@@ -66,6 +66,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
+      sido: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
+      sigungu: {
+        //시군도
+        allowNull: true,
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,
