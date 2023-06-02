@@ -3,7 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const router = express.Router();
 const authjwt = require("../middlewares/auth-middlewares");
-const { Users, Jobs, sequelize } = require("../models");
+const { Users, Jobs, sequelize, JusoLists } = require("../models");
 
 // image_file 서버에 저장해주는 multer 설정
 const fileStorage = multer.diskStorage({
@@ -432,6 +432,111 @@ router.delete("/job/:job_id", authjwt, async (req, res) => {
       errorMessage:
         "채용공고 글이 정상적으로 삭제되지 않았습니다. 요청이 올바르지 않습니다.",
     });
+  }
+});
+
+//시도 검색
+router.get("/findsido", async (req, res) => {
+  try {
+    //시도 데이터가 있다면
+    const count = await JusoLists.count({
+      distinct: true,
+      col: "sido",
+    });
+
+    if (count > 1) {
+      const sidoList = await JusoLists.findAll({
+        attributes: [[sequelize.fn("DISTINCT", sequelize.col("sido")), "sido"]],
+        group: ["sido"],
+        order: [["sido", "asc"]],
+      });
+
+      console.log(sidoList);
+      return res.status(200).json({ data: sidoList });
+    } else {
+      //없다면 import sigungu 호출
+      const message = sidoData();
+      console.log(message);
+    }
+  } catch (error) {
+    res.status(400).json({ errorMessage: "요청이 올바르지 않습니다." } + error);
+  }
+});
+
+// 구군 검색
+router.get("/findsigungu/:sido", async (req, res) => {
+  try {
+    const { sido } = req.params;
+    console.log(sido);
+    if (!sido) {
+      res.status(400).json({ errorMessage: "요청이 올바르지 않습니다." });
+    }
+    const count = await JusoLists.count({
+      distinct: true,
+      col: "sido",
+    });
+    if (count > 1) {
+      //시도 데이터가 있다면
+      await JusoLists.findAll({
+        attributes: [
+          [sequelize.fn("DISTINCT", sequelize.col("sigungu")), "sigungu"],
+        ],
+        where: [{ sido }],
+        group: ["sigungu"],
+        order: [["sigungu", "DESC"]],
+      }).then((result) => {
+        // console.log("test " +result)
+        return res.status(200).json({ data: result });
+      });
+    }
+  } catch (error) {
+    res.status(400).json({ errorMessage: "요청이 올바르지 않습니다." } + error);
+  }
+});
+
+//시군구 데이터 삽입
+router.get("/importSidoData", async (req, res) => {
+  try {
+    const count = await JusoLists.count({
+      distinct: true,
+      col: "sido",
+    });
+
+    if (count === 0) {
+      const fs = require("fs");
+      const path = require("path");
+      const FILE_NAME = "dataAPI_1.csv";
+      const csvPath = path.join(__dirname, FILE_NAME);
+
+      console.log(csvPath);
+      const rows = fs.readFileSync(csvPath, "utf-8").split("\r");
+
+      //console.log("i ======>"+rows.length);
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i].split(",");
+        if (row[7] !== "" || row[2] === "") {
+          continue;
+        }
+        if (row[1].substring(row[1].length - 1) === "시") {
+          await JusoLists.create({
+            sido: row[1],
+            sigungu: row[2],
+            //eupmyeonDong:row[3],
+          });
+        } else {
+          //console.log("tset" +row[2])
+          await JusoLists.create({
+            sido: row[2],
+            sigungu: row[3],
+            //eupmyeonDong:row[3],
+          });
+        }
+      }
+    }
+
+    return res.status(200).json({ message: "DB import success" });
+  } catch (error) {
+    return res.status(400).json({ message: "DB import fail" });
   }
 });
 
