@@ -14,7 +14,7 @@ const fileStorage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // 저장되는 이름 지정
-    cb(null, file.originalname);
+    cb(null, File.name);
   },
 });
 
@@ -40,7 +40,7 @@ const fileFilter = (req, file, cb) => {
 };
 // image_file 저장
 const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
-  "image"
+  "File"
 );
 
 // 0. 이미지 파일 업로드 API
