@@ -26,10 +26,17 @@ app.use(
 app.use(passport.initialize()); // Passport를 초기화합니다.
 app.use(passport.session()); // Passport 세션을 사용합니다.
 
-const cors = require('cors');
-app.use(cors({ origin: ['*.ysizuku.com', 'http://localhost:3000', 'http://ysizuku.com']
-             , credentials: true
-}));
+const cors = require("cors");
+app.use(
+  cors({
+    origin: [
+      "*.ysizuku.com",
+      "http://localhost:3000",
+      "http://react.ysizuku.com",
+    ],
+    credentials: true,
+  })
+);
 
 passport.serializeUser((user, done) => {
   console.log("serializeUser", user);
