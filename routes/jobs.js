@@ -51,7 +51,7 @@ const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
 router.post("/job/upload", upload, async (req, res) => {
   try {
     const fileUrl = req.file.path;
-    return res.status(200).json({ message: fileUrl });
+    return res.status(200).json({ url:fileUrl, message: "업로드 성공" });
   } catch (e) {
     console.log(e);
     return res
