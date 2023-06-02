@@ -46,6 +46,9 @@ const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
 // 0. 이미지 파일 업로드 API
 //    @ image_file 작성
 router.post("/job/upload", upload, async (req, res) => {
+  if (req.fileValidationError) {
+    return res.status(412).json({ errorMessage: req.fileValidationError });
+  }
   try {
     const image_file = req.file;
     return res.status(200).json({ message: `${image_file}를 업로드 성공` });
