@@ -148,7 +148,7 @@ router.get("/job", async (req, res) => {
       raw: true,
     });
 
-    // 작성된 채용공고 글이 없을 경우
+    // 작성된 채용공고 글이 없을 경우.
     if (jobs.length === 0) {
       return res
         .status(400)
