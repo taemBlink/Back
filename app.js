@@ -8,10 +8,8 @@ const kakao = require("./passport/kakaoStrategy");
 const jobRouter = require("./routes/jobs");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-// const cors = require('cors');
 const app = express();
 require("dotenv").config();
-require('./config/config.js')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -28,7 +26,10 @@ app.use(
 app.use(passport.initialize()); // Passport를 초기화합니다.
 app.use(passport.session()); // Passport 세션을 사용합니다.
 
-// app.use(cors());
+const cors = require('cors');
+app.use(cors({ origin: ['*.ysizuku.com', 'http://localhost:3000', 'http://ysizuku.com']
+             , credentials: true
+}));
 
 passport.serializeUser((user, done) => {
   console.log("serializeUser", user);
