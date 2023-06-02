@@ -10,6 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       sido: {
+        //
         allowNull: false,
         type: Sequelize.STRING,
       },

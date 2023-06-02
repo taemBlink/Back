@@ -479,7 +479,7 @@ router.get("/findsigungu/:sido", async (req, res) => {
       col: "sido",
     });
     if (count > 1) {
-      //시도 데이터가 있다면
+      //시도 데이터가 있다면.
       await JusoLists.findAll({
         attributes: [
           [sequelize.fn("DISTINCT", sequelize.col("sigungu")), "sigungu"],

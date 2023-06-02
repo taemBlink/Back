@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   JusoLists.init(
     {
       sido: {
+        //
         allowNull: false,
         type: DataTypes.STRING,
       },
