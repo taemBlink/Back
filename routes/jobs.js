@@ -89,7 +89,7 @@ router.post("/job/write", authjwt, async (req, res) => {
         .status(412)
         .json({ errorMessage: "유효하지 않은 키워드 정보입니다." });
     }
-    if (end_date < 1) {
+    if (end_date === undefined) {
       return res
         .status(412)
         .json({ errorMessage: "유효하지 않은 마감 일자 형식입니다." });
