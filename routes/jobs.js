@@ -51,7 +51,7 @@ const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
 router.post("/job/upload", upload, async (req, res) => {
   try {
     const fileUrl = req.file.path;
-    return res.status(200).json({ url:fileUrl, message: "업로드 성공" });
+    return res.status(200).json({ url: fileUrl, message: "업로드 성공" });
   } catch (e) {
     console.log(e);
     return res
@@ -457,12 +457,10 @@ router.get("/findsido", async (req, res) => {
       console.log(sidoList);
       return res.status(200).json({ data: sidoList });
     } else {
-      //없다면 import sigungu 호출
-      const message = sidoData();
-      console.log(message);
+      return res.status(201).json({ data: "데이터가 존재하지 않습니다." });
     }
   } catch (error) {
-    res.status(400).json({ errorMessage: "요청이 올바르지 않습니다." } + error);
+    res.status(400).json({ errorMessage: "요청이 올바르지 않습니다." });
   }
 });
 
@@ -486,7 +484,7 @@ router.get("/findsigungu/:sido", async (req, res) => {
         ],
         where: [{ sido }],
         group: ["sigungu"],
-        order: [["sigungu", "DESC"]],
+        order: [["sigungu", "asc"]],
       }).then((result) => {
         // console.log("test " +result)
         return res.status(200).json({ data: result });
