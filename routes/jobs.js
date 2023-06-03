@@ -43,26 +43,17 @@ const fileFilter = (req, file, cb) => {
 };
 // image_file 저장
 const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
-<<<<<<< HEAD
   "file"
-=======
-  "image"
->>>>>>> f5355cc217ffda0df9d616b2da469acf1d405723
 );
 
 // 0. 이미지 파일 업로드 API
 //    @ image_file 작성
 router.post("/job/upload", upload, async (req, res) => {
   try {
-<<<<<<< HEAD
     const imageName = req.file.filename;
     return res
       .status(200)
       .json({ imageName: imageName, message: "업로드 성공" });
-=======
-    const fileUrl = req.file.path;
-    return res.status(200).json({ url: fileUrl, message: "업로드 성공" });
->>>>>>> f5355cc217ffda0df9d616b2da469acf1d405723
   } catch (e) {
     console.log(e);
     return res
