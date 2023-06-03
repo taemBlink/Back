@@ -31,7 +31,7 @@ app.use(
   cors({
     origin: [
       "*.ysizuku.com",
-      "http://localhost:3000",
+      "http://localhost:3001",
       "http://react.ysizuku.com",
     ],
     credentials: true,
@@ -60,6 +60,14 @@ kakao(); // kakaoStrategy.js의 module.exports를 실행합니다.
 app.use("/", [authRouter, jobRouter]);
 app.use("/mypage", MyPageRouter);
 app.use("/kakao", kakaoRouter);
+
+app.get("/download/:imageName", (req, res) => {
+  const imageName = req.params; // 저장된 이미지 파일 경로
+
+  res.setHeader("Content-Disposition", "attachment; filename=image.jpg");
+  res.setHeader("Content-Type", "image/jpeg");
+  res.sendFile(__dirname + "/uploads/" + imageName.imageName);
+});
 
 const PORT = 3000;
 app.listen(PORT, () => {
