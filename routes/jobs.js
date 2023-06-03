@@ -14,10 +14,7 @@ const fileStorage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // 저장되는 이름 지정
-    cb(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
+    cb(null, file.originalname);
   },
 });
 
@@ -43,15 +40,15 @@ const fileFilter = (req, file, cb) => {
 };
 // image_file 저장
 const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
-  "file"
+  "image"
 );
 
 // 0. 이미지 파일 업로드 API
 //    @ image_file 작성
 router.post("/job/upload", upload, async (req, res) => {
   try {
-    // const fileUrl = req.file.path;
-    return res.status(200).json({ message: "업로드 성공" });
+    const image_file = req.file;
+    return res.status(200).json({ message: `${image_file}를 업로드 성공` });
   } catch (e) {
     console.log(e);
     return res
