@@ -1,5 +1,4 @@
 const express = require("express");
-
 const { Users, sequelize } = require("./models");
 const MyPageRouter = require("./routes/mypage");
 const authRouter = require("./routes/auth.js");
@@ -13,17 +12,17 @@ const cors = require("cors");
 const app = express();
 require("dotenv").config();
 
-app.use(
-  cors({
-    origin: [
-      "*.ysizuku.com",
-      "http://localhost:3000",
-      "http://react.ysizuku.com",
-    ],
-    credentials: true,
-  })
-);
-
+// app.use(
+//   cors({
+//     origin: [
+//       "*.ysizuku.com",
+//       "http://localhost:3000",
+//       "http://react.ysizuku.com",
+//     ],
+//     credentials: true,
+//   })
+// );
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
