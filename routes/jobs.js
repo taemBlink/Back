@@ -514,7 +514,7 @@ router.get("/importSidoData", async (req, res) => {
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i].split(",");
 
-        if (row[7] !== "" || row[2] === "" || row[3] === "") {
+        if (row[7] !== "" || row[2] === "") {
           continue;
         }
 
@@ -532,12 +532,15 @@ router.get("/importSidoData", async (req, res) => {
             });
           }
         } else {
-          const result = JusoLists.count({
+          if (row[3] === "") {
+            continue;
+          }
+          const result = await JusoLists.count({
             col: "juso_id",
             where: [{ sido: row[2], sigungu: row[3] }],
           });
 
-          //   console.log("result 2" + result);
+          // console.log("result 2 ===>" + result);
           if (result == 0) {
             await JusoLists.create({
               sido: row[2],
