@@ -513,24 +513,40 @@ router.get("/importSidoData", async (req, res) => {
       const rows = fs.readFileSync(csvPath, "utf-8").split("\r");
       console.log("import ing~");
       //console.log("i ======>"+rows.length);
+      let importData = {};
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i].split(",");
-        if (row[7] !== "" || row[2] === "") {
+
+        if (row[7] !== "" || row[2] === "" || row[3] === "") {
           continue;
         }
+
         if (row[1].substring(row[1].length - 1) === "시") {
-          await JusoLists.create({
-            sido: row[1],
-            sigungu: row[2],
-            //eupmyeonDong:row[3],
+          //중복방지
+          const result = await JusoLists.count({
+            col: "juso_id",
+            where: [{ sido: row[1], sigungu: row[2] }],
           });
+          //console.log("result " + result);
+          if (result == 0) {
+            await JusoLists.create({
+              sido: row[1],
+              sigungu: row[2],
+            });
+          }
         } else {
-          //console.log("tset" +row[2])
-          await JusoLists.create({
-            sido: row[2],
-            sigungu: row[3],
-            //eupmyeonDong:row[3],
+          const result = JusoLists.count({
+            col: "juso_id",
+            where: [{ sido: row[2], sigungu: row[3] }],
           });
+
+          //   console.log("result 2" + result);
+          if (result == 0) {
+            await JusoLists.create({
+              sido: row[2],
+              sigungu: row[3],
+            });
+          }
         }
       }
       console.log("import end");
@@ -539,7 +555,7 @@ router.get("/importSidoData", async (req, res) => {
       throw new Error();
     }
   } catch (error) {
-    return res.status(400).json({ message: "DB import fail" });
+    return res.status(400).json({ message: "DB import fail" } + error);
   }
 });
 
