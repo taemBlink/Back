@@ -47,13 +47,8 @@ const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
 //    @ image_file 작성
 router.post("/job/upload", upload, async (req, res) => {
   try {
-<<<<<<< HEAD
-    const image_file = req.file;
-    return res.status(200).json({ message: `${image_file}를 업로드 성공` });
-=======
     const fileUrl = req.file.path;
     return res.status(200).json({ url: fileUrl, message: "업로드 성공" });
->>>>>>> 105a034e4a878181f89be40fd0cb1890b553ab7e
   } catch (e) {
     console.log(e);
     return res
