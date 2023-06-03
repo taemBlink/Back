@@ -11,7 +11,7 @@ router.get(
   }),
   function (req, res) {
     // Successful authentication, redirect home.
-    res.redirect("/");
+    res.redirect("http://react.ysizuku.com");
   }
 );
 
