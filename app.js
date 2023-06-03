@@ -1,4 +1,5 @@
 const express = require("express");
+
 const { Users, sequelize } = require("./models");
 const MyPageRouter = require("./routes/mypage");
 const authRouter = require("./routes/auth.js");
@@ -11,6 +12,18 @@ const session = require("express-session");
 const cors = require("cors");
 const app = express();
 require("dotenv").config();
+
+const cors = require("cors");
+app.use(
+  cors({
+    origin: [
+      "*.ysizuku.com",
+      "http://localhost:3000",
+      "http://react.ysizuku.com",
+    ],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -27,8 +40,11 @@ app.use(
 app.use(passport.initialize()); // Passport를 초기화합니다.
 app.use(passport.session()); // Passport 세션을 사용합니다.
 
+<<<<<<< HEAD
 app.use(cors({ origin: "*" }));
 
+=======
+>>>>>>> 105a034e4a878181f89be40fd0cb1890b553ab7e
 passport.serializeUser((user, done) => {
   console.log("serializeUser", user);
   done(null, user.dataValues.user_id);

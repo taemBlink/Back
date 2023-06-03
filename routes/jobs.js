@@ -3,7 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const router = express.Router();
 const authjwt = require("../middlewares/auth-middlewares");
-const { Users, Jobs, sequelize } = require("../models");
+const { Users, Jobs, sequelize, JusoLists } = require("../models");
 
 // image_file 서버에 저장해주는 multer 설정
 const fileStorage = multer.diskStorage({
@@ -47,8 +47,13 @@ const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
 //    @ image_file 작성
 router.post("/job/upload", upload, async (req, res) => {
   try {
+<<<<<<< HEAD
     const image_file = req.file;
     return res.status(200).json({ message: `${image_file}를 업로드 성공` });
+=======
+    const fileUrl = req.file.path;
+    return res.status(200).json({ url: fileUrl, message: "업로드 성공" });
+>>>>>>> 105a034e4a878181f89be40fd0cb1890b553ab7e
   } catch (e) {
     console.log(e);
     return res
@@ -145,7 +150,7 @@ router.get("/job", async (req, res) => {
       raw: true,
     });
 
-    // 작성된 채용공고 글이 없을 경우
+    // 작성된 채용공고 글이 없을 경우.
     if (jobs.length === 0) {
       return res
         .status(400)
@@ -432,6 +437,111 @@ router.delete("/job/:job_id", authjwt, async (req, res) => {
       errorMessage:
         "채용공고 글이 정상적으로 삭제되지 않았습니다. 요청이 올바르지 않습니다.",
     });
+  }
+});
+
+//시도 검색
+router.get("/findsido", async (req, res) => {
+  try {
+    //시도 데이터가 있다면
+    const count = await JusoLists.count({
+      distinct: true,
+      col: "sido",
+    });
+
+    if (count > 1) {
+      const sidoList = await JusoLists.findAll({
+        attributes: [[sequelize.fn("DISTINCT", sequelize.col("sido")), "sido"]],
+        group: ["sido"],
+        order: [["sido", "asc"]],
+      });
+
+      console.log(sidoList);
+      return res.status(200).json({ data: sidoList });
+    } else {
+      return res.status(201).json({ data: "데이터가 존재하지 않습니다." });
+    }
+  } catch (error) {
+    res.status(400).json({ errorMessage: "요청이 올바르지 않습니다." });
+  }
+});
+
+// 구군 검색
+router.get("/findsigungu/:sido", async (req, res) => {
+  try {
+    const { sido } = req.params;
+    console.log(sido);
+    if (!sido) {
+      res.status(400).json({ errorMessage: "요청이 올바르지 않습니다." });
+    }
+    const count = await JusoLists.count({
+      distinct: true,
+      col: "sido",
+    });
+    if (count > 1) {
+      //시도 데이터가 있다면.
+      await JusoLists.findAll({
+        attributes: [
+          [sequelize.fn("DISTINCT", sequelize.col("sigungu")), "sigungu"],
+        ],
+        where: [{ sido }],
+        group: ["sigungu"],
+        order: [["sigungu", "asc"]],
+      }).then((result) => {
+        // console.log("test " +result)
+        return res.status(200).json({ data: result });
+      });
+    }
+  } catch (error) {
+    res.status(400).json({ errorMessage: "요청이 올바르지 않습니다." } + error);
+  }
+});
+
+//시군구 데이터 DB 삽입
+router.get("/importSidoData", async (req, res) => {
+  try {
+    const count = await JusoLists.count({
+      distinct: true,
+      col: "sido",
+    });
+
+    if (count === 0) {
+      const fs = require("fs");
+      const path = require("path");
+      const FILE_NAME = "dataAPI_1.csv";
+      const csvPath = path.join(__dirname, FILE_NAME);
+
+      console.log(csvPath);
+      const rows = fs.readFileSync(csvPath, "utf-8").split("\r");
+      console.log("import ing~");
+      //console.log("i ======>"+rows.length);
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i].split(",");
+        if (row[7] !== "" || row[2] === "") {
+          continue;
+        }
+        if (row[1].substring(row[1].length - 1) === "시") {
+          await JusoLists.create({
+            sido: row[1],
+            sigungu: row[2],
+            //eupmyeonDong:row[3],
+          });
+        } else {
+          //console.log("tset" +row[2])
+          await JusoLists.create({
+            sido: row[2],
+            sigungu: row[3],
+            //eupmyeonDong:row[3],
+          });
+        }
+      }
+      console.log("import end");
+      return res.status(200).json({ message: "DB import success" });
+    } else {
+      throw new Error();
+    }
+  } catch (error) {
+    return res.status(400).json({ message: "DB import fail" });
   }
 });
 
