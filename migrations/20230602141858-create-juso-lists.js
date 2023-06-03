@@ -3,14 +3,13 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("JusoLists", {
-      id: {
+      juso_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
       sido: {
-        //
         allowNull: false,
         type: Sequelize.STRING,
       },

@@ -43,15 +43,9 @@ module.exports = {
         allowNull: false, //
         type: Sequelize.DATE,
       },
-      sido: {
-        //
+      juso_id: {
         allowNull: false,
-        type: Sequelize.STRING,
-      },
-      sigungu: {
-        //시군도
-        allowNull: true,
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
     });
   },

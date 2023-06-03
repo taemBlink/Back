@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_id",
         onDelete: "cascade",
       });
+
+      this.hasMany(models.Jobs, {
+        sourceKey: "juso_id",
+        foreignKey: "juso_id",
+      });
     }
   }
   Jobs.init(
@@ -66,14 +71,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
-      sido: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
-      sigungu: {
-        //시군도
+      juso_id: {
         allowNull: true,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
+        references: {
+          model: "JusoLists",
+          key: "juso_id",
+        },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
     },
     {

@@ -495,7 +495,7 @@ router.get("/findsigungu/:sido", async (req, res) => {
   }
 });
 
-//시군구 데이터 삽입
+//시군구 데이터 DB 삽입
 router.get("/importSidoData", async (req, res) => {
   try {
     const count = await JusoLists.count({
@@ -511,7 +511,7 @@ router.get("/importSidoData", async (req, res) => {
 
       console.log(csvPath);
       const rows = fs.readFileSync(csvPath, "utf-8").split("\r");
-
+      console.log("import ing~");
       //console.log("i ======>"+rows.length);
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i].split(",");
@@ -533,9 +533,11 @@ router.get("/importSidoData", async (req, res) => {
           });
         }
       }
+      console.log("import end");
+      return res.status(200).json({ message: "DB import success" });
+    } else {
+      throw new Error();
     }
-
-    return res.status(200).json({ message: "DB import success" });
   } catch (error) {
     return res.status(400).json({ message: "DB import fail" });
   }

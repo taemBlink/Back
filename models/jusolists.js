@@ -9,18 +9,39 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.Jobs, {
+        sourceKey: "juso_id",
+        foreignKey: "juso_id",
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      });
     }
   }
   JusoLists.init(
     {
+      juso_id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
       sido: {
-        //
         allowNull: false,
         type: DataTypes.STRING,
       },
       sigungu: {
         allowNull: true,
         type: DataTypes.STRING,
+      },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
       },
     },
     {
