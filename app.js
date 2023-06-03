@@ -9,6 +9,7 @@ const kakao = require("./passport/kakaoStrategy");
 const jobRouter = require("./routes/jobs");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const cors = require("cors");
 const app = express();
 require("dotenv").config();
 
