@@ -6,6 +6,7 @@ const kakaoRouter = require("./routes/kakao");
 const passport = require("passport");
 const kakao = require("./passport/kakaoStrategy");
 const jobRouter = require("./routes/jobs");
+const chooseTypeRouter = require('./routes/choosetype');
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const cors = require("cors");
@@ -57,6 +58,7 @@ passport.deserializeUser(async (userId, done) => {
 kakao(); // kakaoStrategy.js의 module.exports를 실행합니다.
 
 app.use("/", [authRouter, jobRouter]);
+app.use("/", chooseTypeRouter);
 app.use("/mypage", MyPageRouter);
 app.use("/kakao", kakaoRouter);
 

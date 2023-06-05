@@ -19,6 +19,7 @@ module.exports = () => {
        * profile: 카카오가 보내준 유저 정보. profile의 정보를 바탕으로 회원가입
        */
       async (accessToken, refreshToken, profile, done) => {
+        console.log('kakao profile : ', profile);
         try {
           const exUser = await Users.findOne({
             where: { sns_id: profile.id, provider: 'kakao' },
@@ -27,12 +28,12 @@ module.exports = () => {
           // 이미 가입된 카카오 프로필이면 성공
           if (exUser) {
             done(null, exUser); // 로그인 인증 완료
-          } else {
-            // 이메일 중복 확인
-            const exEmailUser = await Users.findOne({
-              where: { email: profile._json.kakao_account.email },
-            });
+          } 
 
+          // 이메일 중복 확인
+          const exEmailUser = await Users.findOne({
+            where: { email: profile._json.kakao_account.email },
+          });
             if (exEmailUser) {
               // 이메일이 이미 있다면 로그인 인증 완료
               return done(null, exEmailUser);
@@ -54,11 +55,12 @@ module.exports = () => {
                 sns_id: profile.id,
                 provider: 'kakao',
                 password: hash,
-                user_type: 'lv1',
+                user_type: '',
               });
+              console.log('newUser : ', newUser);
               done(null, newUser); // 회원가입하고 로그인 인증 완료
             });
-          }
+          
         } catch (error) {
           console.error(error);
           done(error);
