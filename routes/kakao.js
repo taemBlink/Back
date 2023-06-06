@@ -11,7 +11,12 @@ router.get(
   }),
   function (req, res) {
     // Successful authentication, redirect home.
-    res.redirect("/");
+    // res.redirect("http://react.ysizuku.com");
+    if (req.user.user_type) {
+      res.redirect("/");
+    } else {
+      res.redirect("/choose_type");
+    }
   }
 );
 

@@ -1,5 +1,4 @@
 const express = require("express");
-
 const { Users, sequelize } = require("./models");
 const MyPageRouter = require("./routes/mypage");
 const authRouter = require("./routes/auth.js");
@@ -7,6 +6,7 @@ const kakaoRouter = require("./routes/kakao");
 const passport = require("passport");
 const kakao = require("./passport/kakaoStrategy");
 const jobRouter = require("./routes/jobs");
+const chooseTypeRouter = require('./routes/choosetype');
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const cors = require("cors");
@@ -24,8 +24,8 @@ app.use(
   })
 );
 
-app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(cookieParser());
 
 app.use(
@@ -58,9 +58,13 @@ passport.deserializeUser(async (userId, done) => {
 
 kakao(); // kakaoStrategy.js의 module.exports를 실행합니다.
 
-app.use("/", [authRouter, jobRouter]);
+app.use("/", [authRouter, jobRouter, chooseTypeRouter]);
 app.use("/mypage", MyPageRouter);
 app.use("/kakao", kakaoRouter);
+
+// app.get("/", (req, res) => {
+//   res.send("Hello World!");
+// });
 
 app.get("/download/:imageName", (req, res) => {
   const imageName = req.params; // 저장된 이미지 파일 경로
