@@ -5,15 +5,15 @@ const { Users } = require("../models");
 
 module.exports = async (req, res, next) => {
   try {
-    const { authorization } = req.cookies;
-    const [tokenType, token] = authorization.split(" "); // 중괄호{} 를 대괄호[]로 수정
-
+    const authorization = req.cookies["authorization"];
     // # 403 Cookie가 존재하지 않을 경우
     if (!authorization) {
       return res
         .status(403)
         .json({ errorMessage: "로그인이 필요한 기능입니다." });
     }
+
+    const [tokenType, token] = authorization.split(" "); // 중괄호{} 를 대괄호[]로 수정
     if (tokenType !== "token") {
       res.clearCookie("authorization");
       return res
