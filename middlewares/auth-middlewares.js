@@ -7,8 +7,10 @@ module.exports = async (req, res, next) => {
   try {
     const authorizationCookies = req.cookies.authorization;
     const authorizationHeaders = req.headers.authorization;
-    const authorization = authorizationCookies? authorizationCookies : authorizationHeaders
-    
+    const authorization = authorizationCookies
+      ? authorizationCookies
+      : authorizationHeaders;
+
     // # 403 Cookie가 존재하지 않을 경우
     if (!authorization) {
       return res

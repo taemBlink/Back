@@ -19,7 +19,7 @@ module.exports = {
       },
       content: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT("medium"),
       },
       keywords: {
         allowNull: false,
@@ -40,7 +40,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       updatedAt: {
-        allowNull: false, //
+        allowNull: false,
         type: Sequelize.DATE,
       },
       juso_id: {
