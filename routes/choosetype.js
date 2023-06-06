@@ -189,7 +189,7 @@ router.post('/choose_type', async (req, res) => {
   
           await req.user.update({ user_type: type, company: company });
   
-          res.json({ redirect: '/' });
+          res.json({ redirect: 'http://react.ysizuku.com' });
   
         } else {
           res.send({ error: '로그인에 실패하였습니다.' });
