@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       content: {
         allowNull: false,
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT("medium"),
       },
       keywords: {
         allowNull: false,
