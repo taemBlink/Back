@@ -73,6 +73,13 @@ router.post("/job/write", authjwt, async (req, res) => {
     // content로 넘어온 HTML 형식을 분석해서 넘겨주기
     const visibility = true;
 
+    const chekcType = await Users.count({
+      where: [{ user_id, user_type: "일반회원" }],
+    });
+    if (chekcType > 0) {
+      return res.status(412).json("인사담당자만 작성할수 있습니다.");
+    }
+
     // 유효성 검사
     if (title < 1) {
       return res
