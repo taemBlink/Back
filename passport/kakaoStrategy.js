@@ -1,7 +1,7 @@
 const passport = require('passport');
 const KakaoStrategy = require('passport-kakao').Strategy;
 const bcrypt = require('bcrypt');
-
+const jwt = require('jsonwebtoken'); // 추가: jwt 모듈 불러오기
 const { Users } = require('../models/');
 
 module.exports = () => {
@@ -27,6 +27,7 @@ module.exports = () => {
 
           // 이미 가입된 카카오 프로필이면 성공
           if (exUser) {
+             exUser.token = jwt.sign({ user_id: exUser.user_id }, 'cloneprojJwt_');
             done(null, exUser); // 로그인 인증 완료
           } 
 
@@ -35,6 +36,7 @@ module.exports = () => {
             where: { email: profile._json.kakao_account.email },
           });
             if (exEmailUser) {
+              exEmailUser.token = jwt.sign({ email: exEmailUser.email }, 'cloneprojJwt_');
               // 이메일이 이미 있다면 로그인 인증 완료
               return done(null, exEmailUser);
             }
@@ -57,7 +59,8 @@ module.exports = () => {
                 password: hash,
                 user_type: '',
               });
-              console.log('newUser : ', newUser);
+
+              newUser = jwt.sign({ user_id: newUser.user_id }, 'cloneprojJwt_');
               done(null, newUser); // 회원가입하고 로그인 인증 완료
             });
           
