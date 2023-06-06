@@ -194,7 +194,8 @@ router.post('/choose_type', async (req, res) => {
         // await req.user.save(); // 업데이트된 유저 타입 및 회사 이름 저장
         await req.user.update({ user_type: type, company: company });
 
-        res.redirect('/job'); // 홈페이지로 리다이렉트
+        res.redirect('/'); // 홈페이지로 리다이렉트
+
       } else {
         // 로그인하지 않은 사용자에게 오류 메시지 표시
         res.send('로그인에 실패하였습니다.');

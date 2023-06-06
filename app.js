@@ -59,14 +59,8 @@ passport.deserializeUser(async (userId, done) => {
 kakao(); // kakaoStrategy.js의 module.exports를 실행합니다.
 
 app.use("/", [authRouter, jobRouter, chooseTypeRouter]);
-// app.use("/", chooseTypeRouter);
 app.use("/mypage", MyPageRouter);
 app.use("/kakao", kakaoRouter);
-
-// app.get("/", (req, res) => {
-//   // res.send("Hello World!");
-//   res.redirect("/");
-// });
 
 app.get("/download/:imageName", (req, res) => {
   const imageName = req.params; // 저장된 이미지 파일 경로
