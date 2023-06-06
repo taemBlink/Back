@@ -119,18 +119,19 @@ router.get('/choose_type', (req, res) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data),
+                redirect: 'follow',
                 });
                 
-                if (response.headers.get('Content-Type').includes('application/json')) {
-                const resData = await response.json();
-                if (resData.error) {
-                    alert(resData.error);
+                if (response.ok) {
+                    const resData = await response.json();
+                    if (resData.error) {
+                        alert(resData.error);
+                    } else if (resData.redirect) {
+                        window.location.href = resData.redirect;
+                    }
                 } else {
-                    window.location.href = '/';
-                }
-                } else {
-                const text = await response.text();
-                alert(text); 
+                    const text = await response.text();
+                    alert(text);
                 }
             }
 
@@ -170,47 +171,38 @@ router.get('/choose_type', (req, res) => {
 
 // 사용자가 유저 타입을 선택하고 제출했을 때 실행되는 라우트
 router.post('/choose_type', async (req, res) => {
-  console.log('POST /choose_type : ' + JSON.stringify(req.body));
-  try {
-    //   const type = req.body.user_type; // 선택한 유저 타입 (regular 또는 hr)
-    //   const company = req.body.company; // 회사 이름
-    const { user_type: type, company } = req.body;
-
-    // 선택한 유저 타입이 regular 또는 hr인지 확인
-    if (['regular', 'hr'].includes(type)) {
-      // 로그인한 사용자인지 확인
-      if (req.user) {
-        // 유저 타입이 hr이고 회사 이름이 제공되지 않은 경우
-        if (type === 'hr' && !company) {
-          res.send('회사명을 입력해주세요.');
+    console.log('POST /choose_type : ' + JSON.stringify(req.body));
+    try {
+      const { user_type: type, company } = req.body;
+  
+      if (['regular', 'hr'].includes(type)) {
+        if (req.user) {
+          if (type === 'hr' && !company) {
+            res.send({ error: '회사명을 입력해주세요.' });
+            return;
+          }
+  
+          req.user.user_type = type;
+          if (company) {
+            req.user.company = company;
+          }
+  
+          await req.user.update({ user_type: type, company: company });
+  
+          res.json({ redirect: '/' });
+  
+        } else {
+          res.send({ error: '로그인에 실패하였습니다.' });
           return;
         }
-
-        req.user.user_type = type; // 유저 타입 업데이트
-        if (company) {
-          // 회사 이름 업데이트(만약 제공된 경우)
-          req.user.company = company;
-        }
-        // await req.user.save(); // 업데이트된 유저 타입 및 회사 이름 저장
-        await req.user.update({ user_type: type, company: company });
-
-        res.redirect('/'); // 홈페이지로 리다이렉트
-
       } else {
-        // 로그인하지 않은 사용자에게 오류 메시지 표시
-        res.send('로그인에 실패하였습니다.');
+        res.send({ error: '유효하지 않은 유저 타입입니다.' });
         return;
       }
-    } else {
-      // 유효하지 않은 유저 타입을 선택한 경우 오류 메시지 표시
-      res.send('유효하지 않은 유저 타입입니다.');
-      return;
+    } catch (error) {
+      console.log('서버 에러가 발생했습니다.', error);
+      res.status(500).send('서버 에러가 발생했습니다.');
     }
-  } catch (error) {
-    // Handle any potential errors
-    console.log('서버 에러가 발생했습니다.', error);
-    res.status(500).send('서버 에러가 발생했습니다.');
-  }
-});
+  });
 
 module.exports = router;

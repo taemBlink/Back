@@ -62,6 +62,10 @@ app.use("/", [authRouter, jobRouter, chooseTypeRouter]);
 app.use("/mypage", MyPageRouter);
 app.use("/kakao", kakaoRouter);
 
+// app.get("/", (req, res) => {
+//   res.send("Hello World!");
+// });
+
 app.get("/download/:imageName", (req, res) => {
   const imageName = req.params; // 저장된 이미지 파일 경로
 
