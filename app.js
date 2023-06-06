@@ -31,8 +31,14 @@ app.use(cookieParser());
 app.use(
   session({
     secret: process.env.SESSION_SECRET, // 세션 암호화에 사용할 키입니다. 실제로는 .env 등에 저장하는 것이 좋습니다.
-    resave: false,
-    saveUninitialized: false,
+    resave: false,  // 세션을 항상 저장할 지 여부를 정합니다.
+    saveUninitialized: false, // 세션이 저장되기 전에 uninitialized 상태로 미리 만들어서 저장합니다.
+    cookie: {
+      domain: '.ysizuku.com', // .ysizuku.com으로 설정하면 모든 서브도메인에서 쿠키를 사용할 수 있습니다.
+      path: '/',  // /로 설정하면 모든 페이지에서 쿠키를 사용할 수 있습니다.
+      secure: false,  // https가 아닌 환경에서도 사용할 수 있습니다.
+      httpOnly: false,  // 자바스크립트에서 쿠키를 확인할 수 있습니다.
+  },
   })
 );
 

@@ -120,6 +120,7 @@ router.get('/choose_type', (req, res) => {
                 },
                 body: JSON.stringify(data),
                 redirect: 'follow',
+                credentials: 'include',
                 });
                 
                 if (response.ok) {
@@ -188,7 +189,7 @@ router.post('/choose_type', async (req, res) => {
           }
   
           await req.user.update({ user_type: type, company: company });
-  
+
           res.json({ redirect: 'http://react.ysizuku.com' });
   
         } else {
